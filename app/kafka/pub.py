@@ -1,30 +1,43 @@
 from kafka import KafkaProducer
-import logging
-logger = logging.getLogger(__name__) 
 from bson import json_util
-from ..loading.expenditure import Extracting_Metadata
 from .. import config
+import time
+import logging
+logging.basicConfig(
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    level=logging.INFO,
+)
+logger = logging.getLogger(__name__) 
+
 
 class Publisher:
     def __init__(self ,kafka_bootstrap):
 
         self.producer = KafkaProducer(
             bootstrap_servers=kafka_bootstrap,
-            value_serializer=lambda v: json_util.dumps(v).encode('utf-8'),
+            value_serializer=lambda x:
+              json_util.dumps(x).encode('utf-8'),
         )
-        self.logger = logging.getLogger("Publisher")
+        logger.info(f"KafkaProducer created. bootstrap={kafka_bootstrap}")
 
     def publish(self ,topic, message):
-        self.producer.send(topic, value=message)
-        self.logger.info(f"Sent to {topic}: {message}")
+        try:
+            self.producer.send(topic, value=message)
+            logger.info(f"Sent to {topic}: {message}")
+        except Exception as e:
+            logger.error(f"ERROR: From publish : {e} ")
 
 
     def close(self):
+        
+        time.sleep(30)
         self.producer.close()
 
-if __name__ == "main":
+if __name__ == "__main__":
     pub = Publisher(config.KAFKA_BOOTSTRAP)
     pub.publish(config.TOPIC_ ,config.MESSAGE_)
+    pub.close()
 
 
 # python -m app.kafka.pub

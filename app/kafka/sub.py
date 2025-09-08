@@ -1,8 +1,15 @@
-import logging
 from kafka import KafkaConsumer
 from bson import json_util
-logger = logging.getLogger(__name__) 
 from .. import config
+import time
+import logging
+logging.basicConfig(
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    level=logging.INFO,
+)
+logger = logging.getLogger(__name__) 
+
 
 class Consumer:
     
@@ -13,20 +20,22 @@ class Consumer:
             topic,
             bootstrap_servers=kafka_bootstrap,
             group_id=group_id,
-            value_deserializer=lambda v: json_util.loads(v.decode('utf-8')),
+            value_deserializer=lambda v:
+              json_util.loads(v.decode('utf-8')),
         )
-        self.logger = logging.getLogger("Consumer")
+        
 
     def consume_messages(self):
        
         for msg in self.consumer:
-            self.logger.info(f"Received: {msg.value}")
+            logger.info(f"Received: {msg.value}")
             yield msg.value
 
     def close(self):
+        time.sleep(10)
         self.consumer.close()
 
-if __name__ == "main":
+if __name__ == "__main__":
     cons = Consumer(config.TOPIC_ ,config.KAFKA_BOOTSTRAP ,config.GROUP_ID)
     cons.consume_messages()
 
