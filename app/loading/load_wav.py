@@ -15,7 +15,6 @@ class Load_Wav:
             
             all_files = [file for file in self.path.iterdir() if file.is_file()]
             logger.info( f"list all file in folder {self.path}",all_files)
-            print(all_files)
             return all_files
         except Exception as e:
             logger.error(f"ERROR: From Load_Wav.get_files : {e}")
