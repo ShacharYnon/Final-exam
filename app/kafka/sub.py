@@ -2,6 +2,7 @@ from kafka import KafkaConsumer
 from bson import json_util
 from .. import config
 import time
+
 import logging
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -12,7 +13,6 @@ logger = logging.getLogger(__name__)
 
 
 class Consumer:
-    
 
     def __init__(self, topic, kafka_bootstrap, group_id):
 
@@ -24,7 +24,6 @@ class Consumer:
               json_util.loads(v.decode('utf-8')),
         )
         
-
     def consume_messages(self):
        
         for msg in self.consumer:
