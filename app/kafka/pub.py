@@ -27,5 +27,7 @@ if __name__ == "main":
     pub.publish(config.TOPIC_ ,config.MESSAGE_)
 
 
+# python -m app.kafka.pub
+
 
 
