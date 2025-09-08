@@ -27,7 +27,7 @@ class Extracting_Metadata:
             self.modified_time = sf.stat().st_mtime
             self.file_size = sf.stat().st_size
             self.file_details = {
-                "file path " : config.FILE_PATH ,
+                "file path " : config.FILE_PATH,
                 "details" : {
                     "name" : self.name ,
                     "created_time" : datetime.fromtimestamp(self.created_time) ,
@@ -35,6 +35,7 @@ class Extracting_Metadata:
                     "file_size" :  self.file_size
                 }
             }
+            logger.info()
             return self.file_details
         
         except Exception as e :
