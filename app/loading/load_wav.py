@@ -7,23 +7,23 @@ logger = logging.getLogger(__name__)
 
 class Load_Wav:
 
-    def __init__(self ,file_path = config.FILE_PATH):
-        self.file_path = Path(file_path)
-        self._file = None
+    def __init__(self ,path):
+        self.path = Path(path)
 
-    def get_file(self):
-        if self._file is None:
-                self._file = self.file_path
+    def get_files(self ):
         try:
-            logger.info(f"The file {self._file.name} loaded")
-            return self._file
-        except Exception as e :
-            logger.error(f"ERROR: From Load_Wav.get_file :{e}")
+            
+            all_files = [file for file in self.path.iterdir() if file.is_file()]
+            logger.info( f"list all file in folder {self.path}",all_files)
+            print(all_files)
+            return all_files
+        except Exception as e:
+            logger.error(f"ERROR: From Load_Wav.get_files : {e}")
 
 
 if __name__ == "__main__":
-    load = Load_Wav(config.FILE_PATH)
-    load.get_file()
+    load = Load_Wav(config.PATH)
+    load.get_files()
 
 # python -m app.loading.load_wav
 
