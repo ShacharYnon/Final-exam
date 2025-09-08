@@ -1,8 +1,8 @@
 from .pub import Publisher
 from app.loading.expenditure import Extracting_Metadata
 from app import config
-from .sub import Consumer
-from bson import json_util
+# from .sub import Consumer
+# from bson import json_util
 from .. import config
 import time
 import logging
@@ -14,7 +14,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__) 
 
-class Manager:
+class Manager_pub:
 
     def __init__(self):
         self.publisher = Publisher(config.KAFKA_BOOTSTRAP)
@@ -22,6 +22,7 @@ class Manager:
         self.path = config.PATH
         self.topic = config.TOPIC_
         self.data = None
+        
 
     def main(self):
         count = 0
@@ -32,11 +33,12 @@ class Manager:
                 count += 1
             time.sleep(180)
             logger.info(f"Published {count} documents")
+                
         except Exception as e:
             logger.error(f"ERROR: From in Manager.main : {e}")
         finally:
             self.publisher.close()
 
 if __name__ == "__main__":
-    mge = Manager()
+    mge = Manager_pub()
     mge.main()
