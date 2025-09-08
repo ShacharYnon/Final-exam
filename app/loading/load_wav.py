@@ -25,5 +25,5 @@ if __name__ == "__main__":
     load = Load_Wav(config.FILE_PATH)
     load.get_file()
 
-
+# python -m app.loading.load_wav
 
