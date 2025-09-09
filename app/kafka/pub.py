@@ -36,16 +36,12 @@ class Publisher:
             raise RuntimeError(f"Failed to publish to '{topic}': {e}")
 
 
-    def close(self):
-        time.sleep(30)
-        self.producer.close()
-
 if __name__ == "__main__":
     metadata = Extracting_Metadata(config.PATH).get_metadata_from_file()
     pub = Publisher(config.KAFKA_BOOTSTRAP)
     pub.publish(config.TOPIC_ ,metadata)
     
-    #pub.close()
+
 
 
 # python -m app.kafka.pub

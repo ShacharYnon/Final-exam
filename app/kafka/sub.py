@@ -1,7 +1,7 @@
 from kafka import KafkaConsumer
 from bson import json_util
 from .. import config
-import time
+
 
 import logging
 logging.basicConfig(
@@ -48,15 +48,11 @@ class Consumer:
             logger.error(f"Error consuming messages: {e}")
             raise RuntimeError(f"Error consuming messages: {e}")
 
-    def close(self):
-        self.consumer.close()
-        logger.info("KafkaConsumer closed.")
 
 if __name__ == "__main__":
     cons = Consumer(config.TOPIC_ ,config.KAFKA_BOOTSTRAP ,config.GROUP_ID)
     cons.consume_messages()
-   # time.sleep(60)
-  # cons.close()
+
 
 # python -m app.kafka.sub
 
