@@ -21,8 +21,6 @@ class Consumer:
             topic,
             bootstrap_servers=kafka_bootstrap,
             group_id=group_id,
-            auto_offset_reset="earliest",
-            enable_auto_commit=True,
             value_deserializer=lambda v:
               json_util.loads(v.decode('utf-8')),
         )
@@ -30,32 +28,35 @@ class Consumer:
             f"KafkaConsumer created. topics={topic}, bootstrap={kafka_bootstrap}, group_id={group_id}"
             )
         
-
     def consume_messages(self):
         try:
+            num = 0
             for message in self.consumer:
-                val = message.value
-                logger.info(f"Received: {message.value}")
-                if not isinstance(val, dict):
-                    logger.warning(
-                        f"Expected dict payload but got {type(val).__name__}; wrapping into dict."
-                    )
-                    val = {"payload": val}
-                logger.debug(f"Consumed from {message.topic}@{message.partition}/{message.offset}")
-                yield val
-            yield message.value
+                num += 1
+                logger.info(f"Received: {message.value}\n")
+                fields = message.value["file path"],message.value["details"]["name"],message.value["details"]["created_time"]
+                field_id =  "".join(fields)
+                unique_id = hash(field_id)
+                logger.info(f"Generated {num} unique id: {unique_id} for file: {fields}\n ")
+                message.value.update({"unique_id":unique_id})
+                print(message.value)
+
+                # send to mongo
+                #send to ES
+               
         except Exception as e:
             logger.error(f"Error consuming messages: {e}")
             raise RuntimeError(f"Error consuming messages: {e}")
 
     def close(self):
-        
         self.consumer.close()
+        logger.info("KafkaConsumer closed.")
 
 if __name__ == "__main__":
     cons = Consumer(config.TOPIC_ ,config.KAFKA_BOOTSTRAP ,config.GROUP_ID)
     cons.consume_messages()
-    time.sleep(60)
+   # time.sleep(60)
+  # cons.close()
 
 # python -m app.kafka.sub
 
