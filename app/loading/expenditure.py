@@ -3,7 +3,13 @@ from .. import config
 import pathlib
 from datetime import datetime
 import logging
-logger = logging.getLogger(__name__) 
+
+logging.basicConfig(
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    level=logging.INFO,
+)
+logger = logging.getLogger(__name__)
 
 
 class Extracting_Metadata:
@@ -18,36 +24,40 @@ class Extracting_Metadata:
         self.file_size = None
 
 
-    def get_details_from_file(self): 
+    def get_metadata_from_file(self): 
         if self.files is None:
             logger.info("self.files is None")
         count = 0 
         try:
-            
-            for self.file in self.files:
-                sf = self.file
-                self.name = self.file.name
-                self.created_time = sf.stat().st_ctime
-                self.modified_time = sf.stat().st_mtime
-                self.file_size = sf.stat().st_size
-                self.file_details = {
+            all_metadata_files = []
+            for file in self.files:
+                count += 1
+                sf = file
+                name = file.name
+                created_time = sf.stat().st_ctime
+                modified_time = sf.stat().st_mtime
+                file_size = sf.stat().st_size
+                
+                file_metadata = {
                     "file path" : str(sf),
                     "details" : {
-                        "name" : str(self.name) ,
-                        "created_time" : str(datetime.fromtimestamp(self.created_time)) ,
-                        "modified_time" : str(datetime.fromtimestamp(self.modified_time)) ,
-                        "file_size" : str(self.file_size)
+                        "name" : str(name) ,
+                        "created_time" : str(datetime.fromtimestamp(created_time)) ,
+                        "modified_time" : str(datetime.fromtimestamp(modified_time)) ,
+                        "file_size" : str(file_size)
                     }
                 }
-                count += 1
-                logger.info(f"{count} ,{self.file_details}")
-            return self.file_details
+                
+                logger.info(f"number of file:{count},\n name of file: {name},\n metadata of file:{file_metadata}\n\n")
+                all_metadata_files.append(file_metadata)
+            # print(all_metadata_files)
+            return all_metadata_files
         
         except Exception as e :
             logger.error(f"ERROR: From Extracting_details.get_details_from_file: {e}")
 
 if __name__ == "__main__":
     extracting = Extracting_Metadata(config.PATH)
-    extracting.get_details_from_file()
+    extracting.get_metadata_from_file()
 
 # python -m app.loading.expenditure
