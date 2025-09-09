@@ -30,12 +30,17 @@ class Consumer:
         
     def consume_messages(self):
         try:
+            num = 0
             for message in self.consumer:
+                num += 1
                 logger.info(f"Received: {message.value}\n")
                 fields = message.value["file path"],message.value["details"]["name"],message.value["details"]["created_time"]
                 field_id =  "".join(fields)
                 unique_id = hash(field_id)
-                logger.info(f"Generated a unique id: {unique_id} for file: {fields}\n ")
+                logger.info(f"Generated {num} unique id: {unique_id} for file: {fields}\n ")
+                message.value.update({"unique_id":unique_id})
+                print(message.value)
+
                 # send to mongo
                 #send to ES
                
