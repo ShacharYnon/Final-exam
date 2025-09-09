@@ -21,7 +21,7 @@ class Extracting_Metadata:
     def get_details_from_file(self): 
         if self.files is None:
             logger.info("self.files is None")
-
+        count = 0 
         try:
             
             for self.file in self.files:
@@ -31,16 +31,16 @@ class Extracting_Metadata:
                 self.modified_time = sf.stat().st_mtime
                 self.file_size = sf.stat().st_size
                 self.file_details = {
-                    "file path " : sf,
+                    "file path" : str(sf),
                     "details" : {
-                        "name" : self.name ,
-                        "created_time" : datetime.fromtimestamp(self.created_time) ,
-                        "modified_time" : datetime.fromtimestamp(self.modified_time) ,
-                        "file_size" :  self.file_size
+                        "name" : str(self.name) ,
+                        "created_time" : str(datetime.fromtimestamp(self.created_time)) ,
+                        "modified_time" : str(datetime.fromtimestamp(self.modified_time)) ,
+                        "file_size" : str(self.file_size)
                     }
                 }
-                print(self.file_details)
-            logger.info("")
+                count += 1
+                logger.info(f"{count} ,{self.file_details}")
             return self.file_details
         
         except Exception as e :
