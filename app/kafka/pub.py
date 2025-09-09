@@ -1,8 +1,9 @@
 from kafka import KafkaProducer
 from bson import json_util
-# from .. import config
+from .. import config
 import time
 import logging
+from ..loading.expenditure import Extracting_Metadata
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
@@ -21,32 +22,30 @@ class Publisher:
         )
         logger.info(f"KafkaProducer created. bootstrap={kafka_bootstrap}")
 
-    def publish(self ,topic, messages):
+    def publish(self ,topic, messages:list):
         count = 0
-        try:
+        try: 
             for message in messages:
                 self.producer.send(topic, value=message)
                 count += 1
-            self.producer.flush()
+                logger.info(f" Number published: {count},\n Message: {message}. \nPublished to topic: {topic}.\n\n")
+                self.producer.flush()
             logger.info(f"Published {count} message(s) to topic '{topic}'.")
         except Exception as e:
             logger.error(f"Failed to publish to '{topic}': {e}")
             raise RuntimeError(f"Failed to publish to '{topic}': {e}")
-        #     self.producer.send(topic, value=message)
-        #     logger.info(f"Sent to {topic}: {message}")
-        # except Exception as e:
-        #     logger.error(f"ERROR: From publish : {e} ")
 
 
     def close(self):
         time.sleep(30)
         self.producer.close()
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
+    metadata = Extracting_Metadata(config.PATH).get_metadata_from_file()
+    pub = Publisher(config.KAFKA_BOOTSTRAP)
+    pub.publish(config.TOPIC_ ,metadata)
     
-#     pub = Publisher(config.KAFKA_BOOTSTRAP)
-#     pub.publish(config.TOPIC_ ,config.MESSAGE_)
-#     pub.close()
+    #pub.close()
 
 
 # python -m app.kafka.pub

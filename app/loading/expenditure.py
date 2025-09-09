@@ -50,7 +50,6 @@ class Extracting_Metadata:
                 
                 logger.info(f"Creating metadata: number of file:{count},\n name of file: {name},\n metadata of file:{file_metadata}\n\n")
                 all_metadata_files.append(file_metadata)
-            # print(all_metadata_files)
             return all_metadata_files
         
         except Exception as e :
