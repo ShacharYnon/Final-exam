@@ -1,6 +1,6 @@
 from kafka import KafkaProducer
 from bson import json_util
-from .. import config
+# from .. import config
 import time
 import logging
 logging.basicConfig(
