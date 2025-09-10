@@ -14,7 +14,8 @@ MONGO_DB = os.getenv("MONGO_DB", "The_muezzin")
 MONGO_COL = os.getenv("MONGO_COLLECTION", "podcasts")
 
 # Elastic
-ES_CONNECTION = os.getenv("ELASTIC_CONNECTION" ,"http://localhost:9200") 
+ES_ADDRESS_CONNECTION = os.getenv("ELASTIC_CONNECTION" ,"http://localhost:9200") 
+ES_INDEX_NAME = os.getenv("ES_INDEX_NAME" ,"podcasts")
 ES_MAPPING = {
                 "mappings": {
                     "properties": {
