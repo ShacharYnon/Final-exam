@@ -1,7 +1,7 @@
 from kafka import KafkaConsumer
 from bson import json_util
 from .. import config
-
+from ..mongoDB.mongoDAL import DALMongo
 
 import logging
 logging.basicConfig(
@@ -34,13 +34,15 @@ class Consumer:
             for message in self.consumer:
                 num += 1
                 logger.info(f"Received: {message.value}\n")
-                fields = message.value["file path"],message.value["details"]["name"],message.value["details"]["created_time"]
-                field_id =  "".join(fields)
-                unique_id = hash(field_id)
-                logger.info(f"Generated {num} unique id: {unique_id} for file: {fields}\n ")
-                message.value.update({"unique_id":unique_id})
-                print(message.value)
-
+                return message.value
+#============================================
+                # fields = message.value["file path"],message.value["details"]["name"],message.value["details"]["created_time"]
+                # field_id =  "".join(fields)
+                # unique_id = hash(field_id)
+                # logger.info(f"Generated {num} unique id: {unique_id} for file: {fields}\n ")
+                # message.value.update({"unique_id":unique_id})
+                # logger.info(f"message.value {message.value}\n ")
+# =====================================================================
                 # send to mongo
                 #send to ES
                
