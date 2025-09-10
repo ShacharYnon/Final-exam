@@ -33,19 +33,8 @@ class Consumer:
             num = 0
             for message in self.consumer:
                 num += 1
-                logger.info(f"Received: {message.value}\n")
+                logger.info(f"Received by consumer: {message.value}\n")
                 return message.value
-#============================================
-                # fields = message.value["file path"],message.value["details"]["name"],message.value["details"]["created_time"]
-                # field_id =  "".join(fields)
-                # unique_id = hash(field_id)
-                # logger.info(f"Generated {num} unique id: {unique_id} for file: {fields}\n ")
-                # message.value.update({"unique_id":unique_id})
-                # logger.info(f"message.value {message.value}\n ")
-# =====================================================================
-                # send to mongo
-                #send to ES
-               
         except Exception as e:
             logger.error(f"Error consuming messages: {e}")
             raise RuntimeError(f"Error consuming messages: {e}")
