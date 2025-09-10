@@ -14,8 +14,22 @@ MONGO_DB = os.getenv("MONGO_DB", "The_muezzin")
 MONGO_COL = os.getenv("MONGO_COLLECTION", "podcasts")
 
 # Elastic
-ELASTIC_CONNECTION = os.getenv("ELASTIC_CONNECTION" ,"http://localhost:9200") 
-
+ES_CONNECTION = os.getenv("ELASTIC_CONNECTION" ,"http://localhost:9200") 
+ES_MAPPING = {
+                "mappings": {
+                    "properties": {
+                        "UniqueID":{"type": "Keyword"},
+                        "FilePath": {"type": "Keyword"},
+                        "FileName":{"type": "Keyword"},
+                        "FileSize": {"type": "Keyword"},
+                        "details":{
+                            "type": "object",
+                                "CreateDate": {"type": "datetime" ,"format": "yyyy-MM-dd"},
+                                "ModifiedTime": {"type": "datetime" ,"format": "yyyy-MM-dd"},  
+                                    }
+                                    }
+                            }   
+            }
 
 # test
 MESSAGE_TEST = os.getenv("MESSAGE" ,"hello word") 

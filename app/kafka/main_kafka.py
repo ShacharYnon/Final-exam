@@ -40,15 +40,15 @@ class Manager:
                 num += 1
                 logger.info(f"Received: {message}\n")
                 # Generated unique id
-                fields = message["file path"],message["details"]["name"],message["details"]["created_time"]
+                fields = message["file path"],message["name"],message["time_details"]["created_time"]
                 field_id =  "".join(fields)
                 unique_id = hash(field_id)
                 logger.info(f"Generated {num} unique id: {unique_id} for file: {fields}\n ")
                 # update unique id to the messages
                 message.update({"unique_id":unique_id})
-                logger.info(f"message.value {message}\n ")
+                logger.info(f"message value {message}\n ")
                 # send the file to mongo
-                self.mongo.upload_big_files(message["file path"] ,message["details"]["name"] ,unique_id)
+                self.mongo.upload_big_files(message["file path"] ,message["name"] ,unique_id)
                 #send the metadata to ES
                
         except Exception as e:
