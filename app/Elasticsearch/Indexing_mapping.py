@@ -19,14 +19,14 @@ es = Elasticsearch("http://localhost:9200")
 mapping = {
                 "mappings": {
                     "properties": {
-                        "UniqueID":{"type": "Keyword"},
-                        "FilePath": {"type": "Keyword"},
-                        "FileName":{"type": "Keyword"},
-                        "FileSize": {"type": "Keyword"},
+                        "UniqueID":{"type": "keyword"},
+                        "FilePath": {"type": "keyword"},
+                        "FileName":{"type": "keyword"},
+                        "FileSize": {"type": "keyword"},
                         "details":{
                             "type": "object",
-                                "CreateDate":{"type": "datetime" ,"format": "yyyy-MM-dd"},
-                                "ModifiedTime":{"type": "datetime" ,"format": "yyyy-MM-dd"},
+                                "CreateDate":{"type": "datetime"},
+                                "ModifiedTime":{"type": "datetime"},
                                     }
                                     }
                             }   
@@ -34,7 +34,7 @@ mapping = {
 
 index_name = "podcasts"
 try:
-    es.indices.create(index=index_name, body={"mappings": mapping})
+    es.indices.create(index=index_name, body=mapping )
     logger.info(f"Index '{index_name}' created successfully with custom mapping.")
 except Exception as e:
     if "resource_already_exists_exception" in str(e):
