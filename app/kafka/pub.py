@@ -24,6 +24,7 @@ class Publisher:
 
     def publish(self ,topic, messages:list):
         count = 0
+        time.sleep(5)
         try: 
             for message in messages:
                 self.producer.send(topic, value=message)
