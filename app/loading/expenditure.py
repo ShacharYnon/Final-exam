@@ -40,11 +40,12 @@ class Extracting_Metadata:
                 
                 file_metadata = {
                     "file path" : str(sf),
-                    "details" : {
-                        "name" : str(name) ,
+                    "name" : str(name),
+                    "file_size" : str(file_size),
+                    "time_details" : {
                         "created_time" : str(datetime.fromtimestamp(created_time)) ,
-                        "modified_time" : str(datetime.fromtimestamp(modified_time)) ,
-                        "file_size" : str(file_size)
+                        "modified_time" : str(datetime.fromtimestamp(modified_time))
+                        
                     }
                 }
                 
