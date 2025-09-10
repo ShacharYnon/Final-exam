@@ -1,6 +1,5 @@
-from elasticsearch import Elasticsearch
-# from .. import config
-
+from elasticsearch import Elasticsearch ,helpers
+from .. import config
 import logging
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -8,36 +7,58 @@ logging.basicConfig(
     level=logging.INFO,
 )
 logger = logging.getLogger(__name__)
-# es = Elasticsearch(config.ES_CONNECTION)
 
-# Define the mapping
+class ElasticSearch_es:
 
+    def __init__(self,
+                 address_connection,
+                 mapping,
+                 index_name):
+        self.es = Elasticsearch(address_connection)
+        self.data = None
+        self.index_name = index_name
+        self.mapping = mapping
+        self.query = None
 
-# Create the index with the specified mapping
+    def connection_to_es(self):
+        try:
+            es = self.es
+            logger.info("Connection to ES successful")
+            return es
+        except Exception as e:
+            logger.info(f"ERROR: from Processing.connection_to_es: {e}")
 
-es = Elasticsearch("http://localhost:9200")
-mapping = {
-                "mappings": {
-                    "properties": {
-                        "UniqueID":{"type": "keyword"},
-                        "FilePath": {"type": "keyword"},
-                        "FileName":{"type": "keyword"},
-                        "FileSize": {"type": "keyword"},
-                        "details":{
-                            "type": "object",
-                                "CreateDate":{"type": "datetime"},
-                                "ModifiedTime":{"type": "datetime"},
-                                    }
-                                    }
-                            }   
-            }
+    def es_mapping(self):
+        try:
+            if not self.es.indices.exists(index=self.index_name):
+                self.es.indices.create(index= self.index_name ,body=self.mapping)
+                logger.info(f"The index was successful.")
+            results = helpers.scan(self.es,index=self.index_name, body=self.query)
+            return results
+        except Exception as e:
+            logger.info(f"ERROR: From Processing.indexing: {e}")
 
-index_name = "podcasts"
-try:
-    es.indices.create(index=index_name, body=mapping )
-    logger.info(f"Index '{index_name}' created successfully with custom mapping.")
-except Exception as e:
-    if "resource_already_exists_exception" in str(e):
-        logger.info(f"Index '{index_name}' already exists. Skipping creation.")
-    else:
-        logger.error(f"Error creating index: {e}")
+    def es_indexing(self ,data = None):
+        if not self.es:
+            raise ValueError("Elasticsearch connection not established")
+
+        try:
+            actions = [{"_index": self.index_name, "_source": doc} for doc in data]
+            helpers.bulk(client=self.es, actions=actions)
+            logger.info(f"Successfully indexed {len(data)} documents into {index_name}")
+            return len(data)
+        except Exception as e:
+            logger.error(f"Failed to index data: {e}")
+            raise
+
+    
+# if __name__ == "__main__":
+#     es = ElasticSearch_es(
+#          config.ES_ADDRESS_CONNECTION,
+#          config.ES_MAPPING,
+#          config.ES_INDEX_NAME
+#         )
+#     es.connection_to_es()
+#     es.es_mapping()
+#     es.es_indexing()
+

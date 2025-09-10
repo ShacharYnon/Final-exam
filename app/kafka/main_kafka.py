@@ -4,6 +4,7 @@ from .pub import Publisher
 from ..mongoDB.mongoDAL import DALMongo
 from ..loading.expenditure import Extracting_Metadata
 import logging
+from ..Elasticsearch.Indexing_mapping import ElasticSearch_es
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
@@ -20,13 +21,17 @@ class Manager:
                 group_id,
                 mongo_uri,
                 mongo_name_DB,
-                path
+                path,
+                address_connection,
+                mapping,
+                index_name
                  ):
         self.metadata = Extracting_Metadata(path=path).get_metadata_from_file()
         self.topic = topic
         self.pub = Publisher(kafka_bootstrap=kafka_bootstrap)
         self.sub = Consumer(topic=topic ,kafka_bootstrap=kafka_bootstrap ,group_id=group_id)
         self.mongo = DALMongo(uri=mongo_uri ,db_name=mongo_name_DB)
+        self.es = ElasticSearch_es(address_connection=address_connection ,mapping=mapping,index_name=index_name )
         
         
     def start(self):
@@ -50,6 +55,9 @@ class Manager:
                 # send the file to mongo
                 self.mongo.upload_big_files(message["file path"] ,message["name"] ,unique_id)
                 #send the metadata to ES
+                self.es.es_indexing(message)
+
+
                
         except Exception as e:
             logger.error(f"ERROR: From Manager.start ,ManagerKafka: {e}")
@@ -63,7 +71,10 @@ if __name__ == "__main__":
         config.KAFKA_GROUP_ID,
         config.MONGO_URI,
         config.MONGO_DB,
-        config.PATH_LOAD
+        config.PATH_LOAD,
+        config.ES_ADDRESS_CONNECTION,
+        config.ES_MAPPING,
+        config.ES_INDEX_NAME
         )
     run.start()
 
